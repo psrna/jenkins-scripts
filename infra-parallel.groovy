@@ -5,9 +5,9 @@ void provisionTestDeploy(String snapshotName, String labels, String baseImage, S
     
     sh """
         function clean_openstack {
-	        ${WORKSPACE}/bin/runscript.groovy \"client.compute().servers().delete(\"\$SERVER_ID\").isSuccess()\"
+	        ${WORKSPACE}/bin/runscript.groovy \"client.compute().servers().delete(\\"\$SERVER_ID\\").isSuccess()\"
             floatingIpId=\$($WORKSPACE/bin/runscript.groovy 'client.compute().floatingIps().list().find{ it.floatingIpAddress.equals(\"'\$MACHINE_IP'\") }.each { println \"\${it.id}\"}')
-            ${WORKSPACE}/bin/runscript.groovy \"client.compute().floatingIps().deallocateIP(\"\$floatingIpId\")\"
+            ${WORKSPACE}/bin/runscript.groovy \"client.compute().floatingIps().deallocateIP(\\"\$floatingIpId\\")\"
         }
 
         PATH=$PATH:${COMMON_TOOLS}${SEP}groovy-2.4.3/bin
@@ -23,6 +23,7 @@ void provisionTestDeploy(String snapshotName, String labels, String baseImage, S
         \$SSH hudson@\$MACHINE_IP \"\$test\"
 
         ${WORKSPACE}/bin/runscript.groovy ${WORKSPACE}/bin/update-snapshot.groovy --server \${SERVER_ID} --name ${snapshotName}
+        clean_openstack
     """
 }
 
